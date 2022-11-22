@@ -21,6 +21,7 @@ const App = () => {
   }
 
   const addTodoHandler = () => {
+    if (!description.trim()) return
     const newList = TodoList.map((item) => ({ ...item }))
     newList.push({ description, status: "Pending", id: uuid() })
     setDescription("")
@@ -47,52 +48,27 @@ const App = () => {
           </div>
         </div>
         <div>
-          {TodoList.filter(({ status }) => status === "Pending").map(
-            ({ id, description, status }, index) => (
-              <div className="flex mb-4 items-center" key={id}>
-                <p className="w-full text-grey-darkest">
-                  {description} (Pending)
-                </p>
-                <button
-                  className="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded border-green hover:bg-green"
-                  onClick={() => {
-                    setStatus(status === "Pending" ? "Done" : "Pending", index)
-                  }}
-                >
-                  {status === "Pending" ? "Mark Done" : "Mark Not Done"}
-                </button>
-                <button
-                  className="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:bg-red"
-                  onClick={() => deleteTodoHandler(index)}
-                >
-                  Remove
-                </button>
-              </div>
-            )
-          )}
-        </div>
-        <div>
-          {TodoList.filter(({ status }) => status === "Done").map(
-            ({ id, description, status }, index) => (
-              <div className="flex mb-4 items-center" key={id}>
-                <p className="w-full text-grey-darkest">{description} (Done)</p>
-                <button
-                  className="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded border-green hover:bg-green"
-                  onClick={() => {
-                    setStatus(status === "Pending" ? "Done" : "Pending", index)
-                  }}
-                >
-                  {status === "Pending" ? "Mark Done" : "Mark Not Done"}
-                </button>
-                <button
-                  className="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:bg-red"
-                  onClick={() => deleteTodoHandler(index)}
-                >
-                  Remove
-                </button>
-              </div>
-            )
-          )}
+          {TodoList.map(({ id, description, status }, index) => (
+            <div className="flex mb-4 items-center" key={id}>
+              <p className="w-full text-grey-darkest">
+                {description} ({status === "Pending" ? "Pending" : "Done"})
+              </p>
+              <button
+                className="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded border-green hover:bg-green"
+                onClick={() => {
+                  setStatus(status === "Pending" ? "Done" : "Pending", index)
+                }}
+              >
+                {status === "Pending" ? "Mark Done" : "Mark Not Done"}
+              </button>
+              <button
+                className="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:bg-red"
+                onClick={() => deleteTodoHandler(index)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
