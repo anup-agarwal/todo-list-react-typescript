@@ -1,26 +1,102 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react"
+import { v4 as uuid } from "uuid"
+import "./App.css"
 
-function App() {
+const App = () => {
+  const [description, setDescription] = useState<string>("")
+  const [TodoList, setTodoList] = useState<
+    { id: string; description: string; status: "Done" | "Pending" }[]
+  >([])
+
+  const deleteTodoHandler = (index: number) => {
+    const newList = TodoList.map((item) => ({ ...item }))
+    newList.splice(index, 1)
+    setTodoList(newList)
+  }
+
+  const setStatus = (status: "Done" | "Pending", index: number) => {
+    const newList = TodoList.map((item) => ({ ...item }))
+    newList[index].status = status
+    setTodoList(newList)
+  }
+
+  const addTodoHandler = () => {
+    const newList = TodoList.map((item) => ({ ...item }))
+    newList.push({ description, status: "Pending", id: uuid() })
+    setDescription("")
+    setTodoList(newList)
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="h-100 w-full flex items-center justify-center bg-teal-lightest font-sans">
+      <div className="bg-white rounded shadow p-6 m-4 w-9/12">
+        <div className="mb-4">
+          <h1 className="text-grey-darkest">Todo List</h1>
+          <div className="flex mt-4">
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
+              placeholder="Add Todo"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <button
+              className="flex-no-shrink p-2 border-2 rounded text-teal border-teal hover:bg-teal"
+              onClick={() => addTodoHandler()}
+            >
+              Add
+            </button>
+          </div>
+        </div>
+        <div>
+          {TodoList.filter(({ status }) => status === "Pending").map(
+            ({ id, description, status }, index) => (
+              <div className="flex mb-4 items-center" key={id}>
+                <p className="w-full text-grey-darkest">
+                  {description} (Pending)
+                </p>
+                <button
+                  className="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded border-green hover:bg-green"
+                  onClick={() => {
+                    setStatus(status === "Pending" ? "Done" : "Pending", index)
+                  }}
+                >
+                  {status === "Pending" ? "Mark Done" : "Mark Not Done"}
+                </button>
+                <button
+                  className="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:bg-red"
+                  onClick={() => deleteTodoHandler(index)}
+                >
+                  Remove
+                </button>
+              </div>
+            )
+          )}
+        </div>
+        <div>
+          {TodoList.filter(({ status }) => status === "Done").map(
+            ({ id, description, status }, index) => (
+              <div className="flex mb-4 items-center" key={id}>
+                <p className="w-full text-grey-darkest">{description} (Done)</p>
+                <button
+                  className="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded border-green hover:bg-green"
+                  onClick={() => {
+                    setStatus(status === "Pending" ? "Done" : "Pending", index)
+                  }}
+                >
+                  {status === "Pending" ? "Mark Done" : "Mark Not Done"}
+                </button>
+                <button
+                  className="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:bg-red"
+                  onClick={() => deleteTodoHandler(index)}
+                >
+                  Remove
+                </button>
+              </div>
+            )
+          )}
+        </div>
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
